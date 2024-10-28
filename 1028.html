@@ -1,0 +1,70 @@
+<html>
+<head>
+        <title>表單控制項</title>
+        <meta charset="UTF-8">
+        <style>
+            input {
+                display: block;
+                margin: 5px 0;
+            }
+            #mytext {
+                font-size: 20pt;
+                color:black;
+            }
+        </style>
+        <script>
+            function get(id) {
+                return document.getElementById(id);
+            }
+            function getRandNum(min,mix) {
+                return Math.floor(Math.random()*(max-min+1))+min;
+            }
+
+            function changeFontSize() {
+                get("range_num").innerHTML=get("rg_font_size").value;
+                get("mytext").style.fontsize=get("rg_font_size").value+"pt";
+            }
+            function changeFontColor() {
+                get("mytext").style.color=get("color_font").value;
+            }
+            function check() {
+                if(get("cb_text").checked) {
+                    if(get("user_text").value.length>0) {
+                        get("mytext").innerHTML=get("user_text").value;
+                    } else {
+                    alert("你沒有輸入文字")
+                    get("cb_text").checked=false;
+                } 
+                } else {
+                    get("mytext").innerHTML="預設文字";
+                }
+            }
+
+            function getRand() {
+                    setTimeout(clearInterval,3000,
+                        setInterval(function() {
+                            get("rand_num").innerHTML=getRandNum(1,99);
+                    },10 )
+                );
+                /*
+                t1=setInterval(function() {
+                        get("rand_num").innerHTML=getRandNum(1,99)
+                },10);
+                setTimeout(function(){
+                    clearInterval(t1);
+                },3000);
+                 */
+            }
+
+        </script>
+</head>
+<body>
+    <div id="mytext">我的文字</div>
+    <input type="text"><input type="checkbox" oninput="check();">套用 <br>
+    <input type="color" id="color_font" oninput="changeFontColor();"><br>
+    <input type="range" id="rg_font_size" min="6" max="100" value="20" oninput="changeFontSize();"><span id="range_num">0</span>
+    <hr>
+    <div id="rand_num">0</div>
+    <button onclick="getRand();">亂數</button>
+</body>
+</html>
