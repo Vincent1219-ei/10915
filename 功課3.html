@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>翻牌遊戲</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        #board {
+            display: grid;
+            grid-template-columns: repeat(4, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #board img {
+            width: 100px;
+            height: 100px;
+            cursor: pointer;
+        }
+
+        #status {
+            margin: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #gameOver {
+            display: none;
+            font-size: 24px;
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>翻牌記憶遊戲</h1>
+    <div id="board">
+        <img src="0.png" alt="card">
+        <img src="0.png" alt="card">
+        <img src="0.png" alt="card">
+        <img src="0.png" alt="card">
+        <img src="0.png" alt="card">
+        <img src="0.png" alt="card">
+        <img src="0.png" alt="card">
+        <img src="0.png" alt="card">
+        <img src="0.png" alt="card">
+        <img src="0.png" alt="card">
+        <img src="0.png" alt="card">
+        <img src="0.png" alt="card">
+    </div>
+
+    <div id="status">
+        <p>分數: <span id="score">0</span></p>
+        <button onclick="gameStart()">開始遊戲</button>
+    </div>
+
+    <div id="gameOver">遊戲結束！恭喜你完成遊戲！</div>
+
+    <script>
+        let imgs;
+        let ans;
+        let x1 = -1, x2 = -1;
+        let score = 0;
+
+        // 開始遊戲
+        function gameStart() {
+            imgs = Array.from(document.getElementsByTagName("img"));
+            ans = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6];
+
+            // 打亂配對卡片
+            ans.sort(function(a, b) {
+                return Math.random() - 0.5;
+            });
+
+            // 顯示隨機配對的圖片
+            setTimeout(function() {
+                for (let i = 0; i < imgs.length; i++) {
+                    imgs[i].src = `${ans[i]}.png`;
+                }
+            }, 500);
+
+            // 隱藏圖片，開始遊戲
+            setTimeout(function() {
+                imgs.forEach(function(o) {
+                    o.src = "0.png";
+                    o.addEventListener("click", guess);
+                });
+            }, 3000);
+
+            // 初始化分數和狀態
+            score = 0;
+            document.getElementById("score").textContent = score;
+            document.getElementById("gameOver").style.display = "none";
+            x1 = -1;
+            x2 = -1;
+        }
+
+        // 進行猜測
+        function guess(event) {
+            let i = imgs.indexOf(event.target);
+
+            if (x1 === -1) {
+                x1 = i;
+                imgs[i].src = `${ans[i]}.png`;
+            } else if (x2 === -1) {
+                x2 = i;
+                imgs[i].src = `${ans[i]}.png`;
+
+                if (ans[x1] === ans[x2]) {
+                    score += 10; // 每對匹配增加 10 分
+                    document.getElementById("score").textContent = score;
+                    x1 = -1;
+                    x2 = -1;
+
+                    // 檢查是否結束遊戲
+                    if (score === 60) { // 12 張卡片，總共 6 對
+                        setTimeout(function() {
+                            document.getElementById("gameOver").style.display = "block";
+                        }, 500);
+                    }
+                } else {
+                    setTimeout(function() {
+                        imgs[x1].src = "0.png";
+                        imgs[x2].src = "0.png";
+                        x1 = -1;
+                        x2 = -1;
+                    }, 1000);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
